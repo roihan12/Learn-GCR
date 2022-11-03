@@ -75,6 +75,8 @@ func (c *userController) Profile(ctx echo.Context) error {
 	claims := token.Claims.(jwt.MapClaims)
 	id := fmt.Sprintf("%v", claims["user_id"])
 	user := c.userService.Profile(id)
+
 	res := helper.BuildResponse(true, "OK", user)
+
 	return ctx.JSON(http.StatusOK, res)
 }
