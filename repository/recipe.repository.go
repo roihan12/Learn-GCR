@@ -2,6 +2,7 @@ package repository
 
 import (
 	"echo-recipe/entity"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -10,7 +11,7 @@ type RecipeRepository interface {
 	InsertRecipe(recipe entity.Recipe) entity.Recipe
 	UpdateRecipe(id string, recipe entity.Recipe) entity.Recipe
 	DeleteRecipe(recipeID string) bool
-	AllRecipe() []entity.Recipe
+	AllRecipe(keyword string) []entity.Recipe
 	FindRecipeByID(recipeID string) entity.Recipe
 }
 
@@ -69,8 +70,16 @@ func (db *recipeConnection) FindRecipeByID(recipeID string) entity.Recipe {
 	return recipe
 }
 
-func (db *recipeConnection) AllRecipe() []entity.Recipe {
+func (db *recipeConnection) AllRecipe(keyword string) []entity.Recipe {
 	var recipe []entity.Recipe
-	db.connection.Debug().Preload("Category").Preload("User").Find(&recipe)
+
+	sql := "SELECT * FROM recipes"
+	s := keyword
+	if s != "" {
+		sql = fmt.Sprintf("%s WHERE name LIKE '%%%s%%' OR description LIKE '%%%s%%'", sql, s, s)
+
+	}
+
+	db.connection.Debug().Preload("Category").Preload("User").Raw(sql).Find(&recipe)
 	return recipe
 }

@@ -29,7 +29,6 @@ var (
 )
 
 func SetupRoute(server *echo.Echo) {
-	// defer database.CloseDatabaseConnection(db)
 
 	authRoute := server.Group("api/v1/auth")
 	authRoute.POST("/login", authController.Login)

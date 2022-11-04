@@ -17,13 +17,13 @@ func AuthorizeJWT(next echo.HandlerFunc) echo.HandlerFunc {
 
 	return func(c echo.Context) error {
 		autheader := c.Request().Header.Get("Authorization")
-		jwtString := strings.Split(autheader, "Bearer ")[1]
 
-		if autheader == "" {
+		if !strings.Contains(autheader, "Bearer") {
 			response := helper.BuildErrorResponse("failed to process request", "No token found", nil)
-			c.JSON(http.StatusBadRequest, response)
-
+			return c.JSON(http.StatusUnauthorized, response)
 		}
+
+		jwtString := strings.Split(autheader, "Bearer ")[1]
 
 		token, err := jwt.Parse(jwtString, func(t *jwt.Token) (interface{}, error) {
 			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -31,6 +31,10 @@ func AuthorizeJWT(next echo.HandlerFunc) echo.HandlerFunc {
 			}
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
+
+		if err != nil {
+			return echo.NewHTTPError(http.StatusUnauthorized, err)
+		}
 
 		if token.Valid {
 			claims := token.Claims.(jwt.MapClaims)

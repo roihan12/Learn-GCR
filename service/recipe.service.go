@@ -14,7 +14,7 @@ type RecipeService interface {
 	Insert(b dto.RecipeDTO) entity.Recipe
 	Update(id string, b dto.RecipeDTO) entity.Recipe
 	Delete(id string) bool
-	All() []entity.Recipe
+	All(keyword string) []entity.Recipe
 	FindByID(recipekID string) entity.Recipe
 }
 
@@ -62,8 +62,8 @@ func (service *recipeService) Delete(id string) bool {
 
 }
 
-func (service *recipeService) All() []entity.Recipe {
-	return service.recipeRepository.AllRecipe()
+func (service *recipeService) All(keyword string) []entity.Recipe {
+	return service.recipeRepository.AllRecipe(keyword)
 
 }
 

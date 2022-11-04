@@ -26,7 +26,7 @@ func NewCategoryRepository(dbConn *gorm.DB) CategoryRepository {
 
 func (db *categoryConnection) Insert(category entity.Category) entity.Category {
 	db.connection.Save(&category)
-	db.connection.Preload("User").Preload("Category").Find(&category)
+	db.connection.Find(&category)
 	return category
 }
 
@@ -45,7 +45,7 @@ func (db *categoryConnection) Update(id string, input entity.Category) entity.Ca
 func (db *categoryConnection) Delete(id string) bool {
 
 	var category entity.Category
-	res := db.connection.Preload("User").Where("id = ?", id).Take(&category)
+	res := db.connection.Where("id = ?", id).Take(&category)
 	db.connection.Delete(&category)
 
 	if res.RowsAffected == 0 {
@@ -64,6 +64,6 @@ func (db *categoryConnection) FindByID(id string) entity.Category {
 
 func (db *categoryConnection) All() []entity.Category {
 	var category []entity.Category
-	db.connection.Debug().Preload("Recipe").Preload("User").Find(category)
+	db.connection.Find(&category)
 	return category
 }

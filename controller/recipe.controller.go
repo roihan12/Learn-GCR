@@ -35,7 +35,10 @@ func NewRecipeController(recipe service.RecipeService, jwtServ service.JWTServic
 }
 
 func (c *recipeController) All(ctx echo.Context) error {
-	var recipes []entity.Recipe = c.recipeService.All()
+
+	keyword := ctx.QueryParam("keyword")
+
+	var recipes []entity.Recipe = c.recipeService.All(keyword)
 	res := helper.BuildResponse(true, "all recipe", recipes)
 
 	return ctx.JSON(http.StatusOK, res)
