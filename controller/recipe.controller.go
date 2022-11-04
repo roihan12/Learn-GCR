@@ -17,6 +17,7 @@ import (
 type RecipeController interface {
 	All(ctx echo.Context) error
 	FindByID(ctx echo.Context) error
+	FindByCategory(ctx echo.Context) error
 	Insert(ctx echo.Context) error
 	Update(ctx echo.Context) error
 	Delete(ctx echo.Context) error
@@ -61,6 +62,21 @@ func (c *recipeController) FindByID(ctx echo.Context) error {
 		res := helper.BuildResponse(true, "recipe found", recipe)
 		return ctx.JSON(http.StatusOK, res)
 	}
+}
+
+func (c *recipeController) FindByCategory(ctx echo.Context) error {
+	var id string = ctx.Param("id")
+
+	if id == "" {
+		res := helper.BuildErrorResponse("No param id was found", "recipe not found", helper.EmptyObj{})
+		return ctx.JSON(http.StatusBadRequest, res)
+	}
+
+	var recipe []entity.Recipe = c.recipeService.FindByCategoryID(id)
+
+	res := helper.BuildResponse(true, "recipe found", recipe)
+	return ctx.JSON(http.StatusOK, res)
+
 }
 
 func (c *recipeController) Insert(ctx echo.Context) error {

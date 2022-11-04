@@ -16,6 +16,7 @@ type RecipeService interface {
 	Delete(id string) bool
 	All(keyword string) []entity.Recipe
 	FindByID(recipekID string) entity.Recipe
+	FindByCategoryID(categoryId string) []entity.Recipe
 }
 
 type recipeService struct {
@@ -70,4 +71,8 @@ func (service *recipeService) All(keyword string) []entity.Recipe {
 func (service *recipeService) FindByID(recipeID string) entity.Recipe {
 	return service.recipeRepository.FindRecipeByID(recipeID)
 
+}
+
+func (service *recipeService) FindByCategoryID(categoryId string) []entity.Recipe {
+	return service.recipeRepository.FindRecipeByCategoryID(categoryId)
 }

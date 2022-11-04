@@ -40,6 +40,7 @@ func SetupRoute(server *echo.Echo) {
 
 	recipeRoute := server.Group("api/v1/recipe", middlewares.AuthorizeJWT)
 	recipeRoute.GET("", recipeController.All)
+	recipeRoute.GET("/categories/:id", recipeController.FindByCategory)
 	recipeRoute.POST("", recipeController.Insert)
 	recipeRoute.GET("/:id", recipeController.FindByID)
 	recipeRoute.PUT("/:id", recipeController.Update)

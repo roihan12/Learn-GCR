@@ -13,6 +13,7 @@ type RecipeRepository interface {
 	DeleteRecipe(recipeID string) bool
 	AllRecipe(keyword string) []entity.Recipe
 	FindRecipeByID(recipeID string) entity.Recipe
+	FindRecipeByCategoryID(categoryId string) []entity.Recipe
 }
 
 type recipeConnection struct {
@@ -81,5 +82,13 @@ func (db *recipeConnection) AllRecipe(keyword string) []entity.Recipe {
 	}
 
 	db.connection.Debug().Preload("Category").Preload("User").Raw(sql).Find(&recipe)
+	return recipe
+}
+
+func (db *recipeConnection) FindRecipeByCategoryID(categoryId string) []entity.Recipe {
+	var recipe []entity.Recipe
+
+	db.connection.Preload("Category").Preload("User").Find(&recipe, "category_id = ?", categoryId)
+
 	return recipe
 }
