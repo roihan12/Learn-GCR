@@ -25,7 +25,7 @@ func (uu *UserUsecase) Login(email string, password string) Domain {
 		return Domain{}
 	}
 
-	user.Token = uu.jwtAuth.GenerateToken(int(user.ID))
+	user.Token = uu.jwtAuth.GenerateToken(user.ID)
 
 	return user
 }

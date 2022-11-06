@@ -24,10 +24,10 @@ func NewNoteController(recipeUC recipes.Usecase) *RecipeController {
 func (ctrl *RecipeController) GetAll(c echo.Context) error {
 	recipesData := ctrl.recipeUseCase.GetAll()
 
-	recipes := []response.Recipe{}
+	recipes := []response.RecipeAll{}
 
 	for _, recipe := range recipesData {
-		recipes = append(recipes, response.FromDomain(recipe))
+		recipes = append(recipes, response.FromDomainGetAll(recipe))
 	}
 
 	return controller.NewResponse(c, http.StatusOK, "success", "all recipes", recipes)
@@ -53,15 +53,12 @@ func (ctrl *RecipeController) Create(c echo.Context) error {
 		return controller.NewResponse(c, http.StatusBadRequest, "failed", "validation failed", "")
 	}
 
-	err := input.Validate()
-
-	if err != nil {
-		return controller.NewResponse(c, http.StatusBadRequest, "failed", "validation failed", "")
+	if err := c.Validate(&input); err != nil {
+		return err
 	}
 
-	user := middlewares.GetUser(c)
-	userID := user.ID
-	input.UserID = uint(userID)
+	user := middlewares.GetUserID(c)
+	input.UserID = user.ID
 
 	recipe := ctrl.recipeUseCase.Create(input.ToDomain())
 
@@ -77,11 +74,12 @@ func (ctrl *RecipeController) Update(c echo.Context) error {
 
 	var recipeId string = c.Param("id")
 
-	err := input.Validate()
-
-	if err != nil {
-		return controller.NewResponse(c, http.StatusBadRequest, "failed", "validation failed", "")
+	if err := c.Validate(&input); err != nil {
+		return err
 	}
+
+	user := middlewares.GetUserID(c)
+	input.UserID = user.ID
 
 	recipe := ctrl.recipeUseCase.Update(recipeId, input.ToDomain())
 

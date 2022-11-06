@@ -11,7 +11,7 @@ import (
 var whitelist []string = make([]string, 5)
 
 type JwtCustomClaims struct {
-	ID int `json:"id"`
+	ID uint `json:"id"`
 	jwt.StandardClaims
 }
 
@@ -27,7 +27,7 @@ func (jwtConf *ConfigJWT) Init() middleware.JWTConfig {
 	}
 }
 
-func (jwtConf *ConfigJWT) GenerateToken(userID int) string {
+func (jwtConf *ConfigJWT) GenerateToken(userID uint) string {
 	claims := JwtCustomClaims{
 		userID,
 		jwt.StandardClaims{
@@ -53,6 +53,12 @@ func GetUser(c echo.Context) *JwtCustomClaims {
 		return nil
 	}
 
+	claims := user.Claims.(*JwtCustomClaims)
+	return claims
+}
+
+func GetUserID(c echo.Context) *JwtCustomClaims {
+	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*JwtCustomClaims)
 	return claims
 }

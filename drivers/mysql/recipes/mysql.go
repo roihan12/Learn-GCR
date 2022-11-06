@@ -65,7 +65,7 @@ func (re *recipeRepository) Update(id string, recipeDomain *recipes.Domain) reci
 	updatedRecipe.CategoryID = recipeDomain.CategoryID
 
 	re.conn.Save(&updatedRecipe)
-
+	re.conn.Preload("User").Preload("Category").Find(&updatedRecipe)
 	return updatedRecipe.ToDomain()
 }
 

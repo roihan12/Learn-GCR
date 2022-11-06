@@ -19,10 +19,45 @@ type Recipe struct {
 	Difficult    string         `json:"difficult"`
 	Time         string         `json:"time"`
 	Serving      string         `json:"serving"`
-	UserID       uint           `json:"user_id"`
-	CategoryID   uint           `json:"category_id"`
+	UserID       uint           `json:"-"`
+	CategoryID   uint           `json:"-"`
 	Category     string         `json:"category"`
 	User         string         `json:"publisher"`
+}
+
+type RecipeAll struct {
+	ID           uint           `json:"id" gorm:"primaryKey"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    time.Time      `json:"updated_at"`
+	DeletedAt    gorm.DeletedAt `json:"deleted_at"`
+	Name         string         `json:"name"`
+	Description  string         `json:"description"`
+	Ingredients  string         `json:"-"`
+	Instructions string         `json:"-"`
+	Difficult    string         `json:"difficult"`
+	Time         string         `json:"time"`
+	Serving      string         `json:"serving"`
+	UserID       uint           `json:"-"`
+	CategoryID   uint           `json:"-"`
+	Category     string         `json:"category"`
+	User         string         `json:"publisher"`
+}
+
+func FromDomainGetAll(domain recipes.Domain) RecipeAll {
+	return RecipeAll{
+
+		ID:          domain.ID,
+		Name:        domain.Name,
+		Description: domain.Description,
+		Difficult:   domain.Difficult,
+		Time:        domain.Time,
+		Serving:     domain.Serving,
+		User:        domain.User,
+		Category:    domain.Category,
+		CreatedAt:   domain.CreatedAt,
+		UpdatedAt:   domain.UpdatedAt,
+		DeletedAt:   domain.DeletedAt,
+	}
 }
 
 func FromDomain(domain recipes.Domain) Recipe {
@@ -36,8 +71,6 @@ func FromDomain(domain recipes.Domain) Recipe {
 		Difficult:    domain.Difficult,
 		Time:         domain.Time,
 		Serving:      domain.Serving,
-		UserID:       domain.UserID,
-		CategoryID:   domain.CategoryID,
 		User:         domain.User,
 		Category:     domain.Category,
 		CreatedAt:    domain.CreatedAt,
