@@ -22,7 +22,9 @@ func NewNoteController(recipeUC recipes.Usecase) *RecipeController {
 }
 
 func (ctrl *RecipeController) GetAll(c echo.Context) error {
-	recipesData := ctrl.recipeUseCase.GetAll()
+	name := c.QueryParam("name")
+
+	recipesData := ctrl.recipeUseCase.GetAll(name)
 
 	recipes := []response.RecipeAll{}
 
@@ -43,6 +45,19 @@ func (ctrl *RecipeController) GetByID(c echo.Context) error {
 	}
 
 	return controller.NewResponse(c, http.StatusOK, "success", "recipe found", response.FromDomain(recipe))
+}
+
+func (ctrl *RecipeController) GetByCategoryID(c echo.Context) error {
+	var id string = c.Param("id")
+
+	recipe := ctrl.recipeUseCase.GetByCategoryID(id)
+
+	recipes := []response.RecipeAll{}
+
+	for _, recipe := range recipe {
+		recipes = append(recipes, response.FromDomainGetAll(recipe))
+	}
+	return controller.NewResponse(c, http.StatusOK, "success", "all recipes by category ", recipes)
 }
 
 func (ctrl *RecipeController) Create(c echo.Context) error {

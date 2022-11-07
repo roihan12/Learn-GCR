@@ -30,6 +30,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	recipe.GET("", cl.RecipeController.GetAll)
 	recipe.GET("/:id", cl.RecipeController.GetByID)
+	recipe.GET("/category/:id", cl.RecipeController.GetByCategoryID)
 	recipe.POST("", cl.RecipeController.Create)
 	recipe.PUT("/:id", cl.RecipeController.Update)
 	recipe.DELETE("/:id", cl.RecipeController.Delete)

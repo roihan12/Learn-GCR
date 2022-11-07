@@ -16,10 +16,14 @@ func NewMySQLRepository(conn *gorm.DB) recipes.Repository {
 	}
 }
 
-func (re *recipeRepository) GetAll() []recipes.Domain {
+func (re *recipeRepository) GetAll(name string) []recipes.Domain {
 	var rec []Recipe
 
 	re.conn.Preload("User").Preload("Category").Find(&rec)
+
+	if name != "" {
+		re.conn.Preload("User").Preload("Category").Where("name LIKE ?", "%"+name+"%").Find(&rec)
+	}
 
 	recipeDomain := []recipes.Domain{}
 
@@ -36,6 +40,20 @@ func (re *recipeRepository) GetByID(id string) recipes.Domain {
 	re.conn.Preload("User").Preload("Category").First(&recipe, "id = ?", id)
 
 	return recipe.ToDomain()
+}
+
+func (re *recipeRepository) GetByCategoryID(categoryID string) []recipes.Domain {
+	var rec []Recipe
+
+	re.conn.Preload("User").Preload("Category").Find(&rec, "category_id = ?", categoryID)
+
+	recipeDomain := []recipes.Domain{}
+
+	for _, recipe := range rec {
+		recipeDomain = append(recipeDomain, recipe.ToDomain())
+	}
+
+	return recipeDomain
 }
 
 func (re *recipeRepository) Create(recipeDomain *recipes.Domain) recipes.Domain {
