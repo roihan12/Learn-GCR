@@ -51,3 +51,17 @@ func (ur *userRepository) GetByEmail(email string, password string) users.Domain
 
 	return user.ToDomain()
 }
+
+func (ur *userRepository) Update(userDomain *users.Domain) users.Domain {
+	password, _ := bcrypt.GenerateFromPassword([]byte(userDomain.Password), bcrypt.DefaultCost)
+
+	rec := FromDomain(userDomain)
+
+	rec.Password = string(password)
+
+	result := ur.conn.Updates(rec).Where(&rec, "ID = ?", userDomain.ID)
+
+	result.Last(&rec)
+
+	return rec.ToDomain()
+}

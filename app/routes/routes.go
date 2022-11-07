@@ -23,6 +23,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	users.POST("/register", cl.AuthController.Register)
 	users.POST("/login", cl.AuthController.Login)
 
+	usersUpdate := e.Group("/api/v1/users", middleware.JWTWithConfig(cl.JWTMiddleware))
+	usersUpdate.PUT("/update", cl.AuthController.Update)
+
 	recipe := e.Group("/api/v1/recipes", middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	recipe.GET("", cl.RecipeController.GetAll)

@@ -29,3 +29,7 @@ func (uu *UserUsecase) Login(email string, password string) Domain {
 
 	return user
 }
+
+func (uu *UserUsecase) Update(userDomain *Domain) Domain {
+	return uu.userRepository.Update(userDomain)
+}

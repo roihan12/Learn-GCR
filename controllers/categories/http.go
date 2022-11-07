@@ -39,10 +39,8 @@ func (ctrl *CategoryController) CreateCategory(c echo.Context) error {
 		return controller.NewResponse(c, http.StatusBadRequest, "failed", "validation failed", "")
 	}
 
-	err := input.Validate()
-
-	if err != nil {
-		return controller.NewResponse(c, http.StatusBadRequest, "failed", "validation failed", "")
+	if err := c.Validate(&input); err != nil {
+		return err
 	}
 
 	category := ctrl.categoryUseCase.Create(input.ToDomain())
@@ -59,10 +57,8 @@ func (ctrl *CategoryController) UpdateCategory(c echo.Context) error {
 
 	var id string = c.Param("id")
 
-	err := input.Validate()
-
-	if err != nil {
-		return controller.NewResponse(c, http.StatusBadRequest, "failed", "validation failed", "")
+	if err := c.Validate(&input); err != nil {
+		return err
 	}
 
 	category := ctrl.categoryUseCase.Update(id, input.ToDomain())

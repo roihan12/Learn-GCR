@@ -81,3 +81,26 @@ func (ctrl *AuthController) Logout(c echo.Context) error {
 		"message": "logout success",
 	})
 }
+
+func (ctrl *AuthController) Update(c echo.Context) error {
+	userUpdate := request.User{}
+
+	if err := c.Bind(&userUpdate); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"message": "invalid request",
+		})
+	}
+
+	if err := c.Validate(&userUpdate); err != nil {
+		return err
+	}
+
+	userUpdated := userUpdate.ToDomain()
+	user := middlewares.GetUserID(c)
+	userUpdated.ID = user.ID
+
+	ctrl.authUseCase.Update(userUpdated)
+
+	return c.JSON(http.StatusCreated, response.FromDomainRegister(*userUpdated))
+
+}

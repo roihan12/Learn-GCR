@@ -20,9 +20,11 @@ type Domain struct {
 type Usecase interface {
 	Register(userDomain *Domain) Domain
 	Login(email string, password string) Domain
+	Update(domain *Domain) Domain
 }
 
 type Repository interface {
 	Register(userDomain *Domain) Domain
 	GetByEmail(email string, password string) Domain
+	Update(domain *Domain) Domain
 }
