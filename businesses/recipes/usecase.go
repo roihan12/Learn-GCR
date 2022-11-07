@@ -9,12 +9,17 @@ func NewNoteUsecase(nr Repository) Usecase {
 		recipeRepository: nr,
 	}
 }
-func (ru *recipeUsecase) GetAll() []Domain {
-	return ru.recipeRepository.GetAll()
+func (ru *recipeUsecase) GetAll(name string) []Domain {
+	return ru.recipeRepository.GetAll(name)
 }
 func (ru *recipeUsecase) GetByID(id string) Domain {
 	return ru.recipeRepository.GetByID(id)
 }
+
+func (ru *recipeUsecase) GetByCategoryID(id string) []Domain {
+	return ru.recipeRepository.GetByCategoryID(id)
+}
+
 func (ru *recipeUsecase) Create(recipeDomain *Domain) Domain {
 	return ru.recipeRepository.Create(recipeDomain)
 }
