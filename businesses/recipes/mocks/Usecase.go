@@ -41,13 +41,29 @@ func (_m *Usecase) Delete(id string) bool {
 	return r0
 }
 
-// GetAll provides a mock function with given fields:
-func (_m *Usecase) GetAll() []recipes.Domain {
-	ret := _m.Called()
+// GetAll provides a mock function with given fields: name
+func (_m *Usecase) GetAll(name string) []recipes.Domain {
+	ret := _m.Called(name)
 
 	var r0 []recipes.Domain
-	if rf, ok := ret.Get(0).(func() []recipes.Domain); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(string) []recipes.Domain); ok {
+		r0 = rf(name)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]recipes.Domain)
+		}
+	}
+
+	return r0
+}
+
+// GetByCategoryID provides a mock function with given fields: id
+func (_m *Usecase) GetByCategoryID(id string) []recipes.Domain {
+	ret := _m.Called(id)
+
+	var r0 []recipes.Domain
+	if rf, ok := ret.Get(0).(func(string) []recipes.Domain); ok {
+		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]recipes.Domain)

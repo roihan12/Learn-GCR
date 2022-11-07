@@ -45,22 +45,39 @@ func TestMain(m *testing.M) {
 
 func TestGetAll(t *testing.T) {
 	t.Run("Get All | Valid", func(t *testing.T) {
-		recipeRepository.On("GetAll").Return([]recipes.Domain{recipeDomain}).Once()
+		recipeRepository.On("GetAll", "test").Return([]recipes.Domain{recipeDomain}).Once()
 
-		result := recipeService.GetAll()
+		result := recipeService.GetAll("test")
 
 		assert.Equal(t, 1, len(result))
 	})
 
 	t.Run("Get All | InValid", func(t *testing.T) {
-		recipeRepository.On("GetAll").Return([]recipes.Domain{}).Once()
+		recipeRepository.On("GetAll", "").Return([]recipes.Domain{}).Once()
 
-		result := recipeService.GetAll()
+		result := recipeService.GetAll("")
 
 		assert.Equal(t, 0, len(result))
 	})
 }
 
+func TestGetByCategoryID(t *testing.T) {
+	t.Run("Get By CategoryID | Valid", func(t *testing.T) {
+		recipeRepository.On("GetByCategoryID", "1").Return([]recipes.Domain{recipeDomain}).Once()
+
+		result := recipeService.GetByCategoryID("1")
+
+		assert.NotNil(t, result)
+	})
+
+	t.Run("Get By CategoryID | InValid", func(t *testing.T) {
+		recipeRepository.On("GetByCategoryID", "-1").Return([]recipes.Domain{}).Once()
+
+		result := recipeService.GetByCategoryID("-1")
+
+		assert.NotNil(t, result)
+	})
+}
 func TestGetByID(t *testing.T) {
 	t.Run("Get By ID | Valid", func(t *testing.T) {
 		recipeRepository.On("GetByID", "1").Return(recipeDomain).Once()

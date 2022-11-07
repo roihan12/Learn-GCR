@@ -25,16 +25,18 @@ type Domain struct {
 }
 
 type Usecase interface {
-	GetAll() []Domain
+	GetAll(name string) []Domain
 	GetByID(id string) Domain
+	GetByCategoryID(id string) []Domain
 	Create(recipeDomain *Domain) Domain
 	Update(id string, recipeDomain *Domain) Domain
 	Delete(id string) bool
 }
 
 type Repository interface {
-	GetAll() []Domain
+	GetAll(name string) []Domain
 	GetByID(id string) Domain
+	GetByCategoryID(id string) []Domain
 	Create(recipeDomain *Domain) Domain
 	Update(id string, recipeDomain *Domain) Domain
 	Delete(id string) bool
