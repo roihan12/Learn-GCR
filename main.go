@@ -1,16 +1,10 @@
 package main
 
 import (
-	"context"
 	_driverFactory "echo-recipe/drivers"
 	"echo-recipe/helper"
-	"log"
-	"net/http"
+	"fmt"
 	"os"
-	"os/signal"
-	"sync"
-	"syscall"
-	"time"
 
 	_recipeUseCase "echo-recipe/businesses/recipes"
 	_recipeController "echo-recipe/controllers/recipes"
@@ -31,7 +25,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-type operation func(ctx context.Context) error
+const DEFAULT_PORT = "1323"
 
 func main() {
 	configDB := _dbDriver.ConfigDB{
@@ -76,68 +70,13 @@ func main() {
 
 	routesInit.RouteRegister(e)
 
-	go func() {
-		if err := e.Start(":1323"); err != nil && err != http.ErrServerClosed {
-			e.Logger.Fatal("shutting down the server")
-		}
-	}()
+	var port string = os.Getenv("PORT")
 
-	wait := gracefulShutdown(context.Background(), 2*time.Second, map[string]operation{
-		"database": func(ctx context.Context) error {
-			return _dbDriver.CloseDB(db)
-		},
-		"http-server": func(ctx context.Context) error {
-			return e.Shutdown(context.Background())
-		},
-	})
+	if port == "" {
+		port = DEFAULT_PORT
+	}
+	var appPort string = fmt.Sprintf(":%s", port)
 
-	<-wait
-}
+	e.Logger.Fatal(e.Start(appPort))
 
-// gracefulShutdown performs application shut down gracefully.
-func gracefulShutdown(ctx context.Context, timeout time.Duration, ops map[string]operation) <-chan struct{} {
-	wait := make(chan struct{})
-	go func() {
-		s := make(chan os.Signal, 1)
-
-		// add any other syscalls that you want to be notified with
-		signal.Notify(s, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
-		<-s
-
-		log.Println("shutting down")
-
-		// set timeout for the ops to be done to prevent system hang
-		timeoutFunc := time.AfterFunc(timeout, func() {
-			log.Printf("timeout %d ms has been elapsed, force exit", timeout.Milliseconds())
-			os.Exit(0)
-		})
-
-		defer timeoutFunc.Stop()
-
-		var wg sync.WaitGroup
-
-		// Do the operations asynchronously to save time
-		for key, op := range ops {
-			wg.Add(1)
-			innerOp := op
-			innerKey := key
-			go func() {
-				defer wg.Done()
-
-				log.Printf("cleaning up: %s", innerKey)
-				if err := innerOp(ctx); err != nil {
-					log.Printf("%s: clean up failed: %s", innerKey, err.Error())
-					return
-				}
-
-				log.Printf("%s was shutdown gracefully", innerKey)
-			}()
-		}
-
-		wg.Wait()
-
-		close(wait)
-	}()
-
-	return wait
 }
