@@ -19,8 +19,8 @@ type Recipe struct {
 	Difficult    string         `json:"difficult"`
 	Time         string         `json:"time"`
 	Serving      string         `json:"serving"`
-	UserID       uint           `json:"-"`
-	CategoryID   uint           `json:"-"`
+	UserID       uint           `json:"user_id"`
+	CategoryID   uint           `json:"category_id"`
 	Category     string         `json:"category"`
 	User         string         `json:"publisher"`
 }
@@ -37,9 +37,9 @@ type RecipeAll struct {
 	Difficult    string         `json:"difficult"`
 	Time         string         `json:"time"`
 	Serving      string         `json:"serving"`
-	UserID       uint           `json:"-"`
 	CategoryID   uint           `json:"-"`
 	Category     string         `json:"category"`
+	UserID       uint           `json:"-"`
 	User         string         `json:"publisher"`
 }
 
@@ -52,7 +52,9 @@ func FromDomainGetAll(domain recipes.Domain) RecipeAll {
 		Difficult:   domain.Difficult,
 		Time:        domain.Time,
 		Serving:     domain.Serving,
+		UserID:      domain.UserID,
 		User:        domain.User,
+		CategoryID:  domain.CategoryID,
 		Category:    domain.Category,
 		CreatedAt:   domain.CreatedAt,
 		UpdatedAt:   domain.UpdatedAt,
@@ -71,7 +73,9 @@ func FromDomain(domain recipes.Domain) Recipe {
 		Difficult:    domain.Difficult,
 		Time:         domain.Time,
 		Serving:      domain.Serving,
+		UserID:       domain.UserID,
 		User:         domain.User,
+		CategoryID:   domain.CategoryID,
 		Category:     domain.Category,
 		CreatedAt:    domain.CreatedAt,
 		UpdatedAt:    domain.UpdatedAt,
