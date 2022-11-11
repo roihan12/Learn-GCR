@@ -20,7 +20,7 @@ type ControllerList struct {
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, This is recipe Api, you can create ! ")
+		return c.String(http.StatusOK, "Hello, This is recipe Api !")
 	})
 
 	users := e.Group("/api/v1/users")
@@ -43,6 +43,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	category := e.Group("/api/v1/categories", middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	category.GET("", cl.CategoryController.GetAllCategories)
+	category.GET("/:id", cl.CategoryController.GetByID)
 	category.POST("", cl.CategoryController.CreateCategory)
 	category.PUT("/:id", cl.CategoryController.UpdateCategory)
 	category.DELETE("/:id", cl.CategoryController.DeleteCategory)

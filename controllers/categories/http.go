@@ -32,6 +32,17 @@ func (ctrl *CategoryController) GetAllCategories(c echo.Context) error {
 	return controller.NewResponse(c, http.StatusOK, "success", "all categories", categories)
 }
 
+func (ctrl *CategoryController) GetByID(c echo.Context) error {
+
+	var id string = c.Param("id")
+	category := ctrl.categoryUseCase.GetByID(id)
+
+	if category.ID == 0 {
+		return controller.NewResponse(c, http.StatusNotFound, "failed", "category not found", "")
+	}
+	return controller.NewResponse(c, http.StatusOK, "success", "category found", response.FromDomain(category))
+}
+
 func (ctrl *CategoryController) CreateCategory(c echo.Context) error {
 	input := request.Category{}
 
