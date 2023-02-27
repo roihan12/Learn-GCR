@@ -70,7 +70,7 @@ func main() {
 
 	routesInit.RouteRegister(e)
 
-	var port string = helper.GetConfig("APP_PORT")
+	var port string = os.Getenv("PORT")
 
 	if port == "" {
 		port = DEFAULT_PORT
