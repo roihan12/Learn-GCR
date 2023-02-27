@@ -29,11 +29,11 @@ const DEFAULT_PORT = "1323"
 
 func main() {
 	configDB := _dbDriver.ConfigDB{
-		DB_USERNAME: os.Getenv("DB_USERNAME"), //helper.GetConfig("DB_USERNAME"),
-		DB_PASSWORD: os.Getenv("DB_PASSWORD"), //helper.GetConfig("DB_PASSWORD"),
-		DB_HOST:     os.Getenv("DB_HOST"),     // helper.GetConfig("DB_HOST"),
-		DB_PORT:     os.Getenv("DB_PORT"),     //helper.GetConfig("DB_PORT"),
-		DB_NAME:     os.Getenv("DB_NAME"),     //helper.GetConfig("DB_NAME"),
+		DB_USERNAME: helper.GetConfig("DB_USERNAME"), //os.Getenv("DB_USERNAME"),  ,
+		DB_PASSWORD: helper.GetConfig("DB_PASSWORD"), //os.Getenv("DB_PASSWORD"), ,
+		DB_HOST:     helper.GetConfig("DB_HOST"),     //os.Getenv("DB_HOST"),
+		DB_PORT:     helper.GetConfig("DB_PORT"),     //os.Getenv("DB_PORT"),
+		DB_NAME:     helper.GetConfig("DB_NAME"),     //os.Getenv("DB_NAME"),
 	}
 
 	db := configDB.InitDB()
