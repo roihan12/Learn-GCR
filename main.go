@@ -25,7 +25,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-const DEFAULT_PORT = "1323"
+const DEFAULT_PORT = "8080"
 
 func main() {
 	configDB := _dbDriver.ConfigDB{
@@ -70,7 +70,7 @@ func main() {
 
 	routesInit.RouteRegister(e)
 
-	var port string = os.Getenv("PORT")
+	var port string = helper.GetConfig("APP_PORT")
 
 	if port == "" {
 		port = DEFAULT_PORT
